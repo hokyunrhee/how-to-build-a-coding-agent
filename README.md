@@ -1,52 +1,54 @@
-# 🧠 Build Your Own Coding Agent via a Step-by-Step Workshop
+# 🧠 단계별 워크샵으로 나만의 코딩 에이전트 만들기
 
-Welcome! 👋 This workshop will guide you through building your own **AI-powered coding assistant** — starting from a basic chatbot, and adding powerful tools like file reading, shell command execution, and code searching.
+환영합니다! 👋 이 워크샵에서는 **AI 기반 코딩 어시스턴트**를 직접 만들어 봅니다. 기본 챗봇에서 시작해서 파일 읽기, 셸 명령 실행, 코드 검색 같은 강력한 도구를 하나씩 붙여 나가요.
 
-You don’t need to be an AI expert. Just follow along and build step-by-step!
+AI 전문가가 아니어도 괜찮아요. 한 단계씩 따라 만들기만 하면 됩니다!
 
-🌐 **Want a detailed overview?** Check out the blog post: [ghuntley.com/agent](https://ghuntley.com/agent/)
+🌐 **자세한 개요가 궁금하다면?** 블로그 글을 확인해 보세요: [ghuntley.com/agent](https://ghuntley.com/agent/)
 
-> 🟦 **TypeScript edition.** This is a TypeScript port of [ghuntley/how-to-build-a-coding-agent](https://github.com/ghuntley/how-to-build-a-coding-agent) (written in Go). Only the language changed — the concepts, the six agents you build and the learning goals are the same.
-
----
-
-## 🎯 What You'll Learn
-
-By the end of this workshop, you’ll understand how to:
-
-- ✅ Connect to the Anthropic Claude API
-- ✅ Build a simple AI chatbot
-- ✅ Add tools like reading files, editing code, and running commands
-- ✅ Handle tool requests and errors
-- ✅ Build an agent that gets smarter with each step
+> 🟦 **TypeScript 버전.** 이 저장소는 Go로 작성된 [ghuntley/how-to-build-a-coding-agent](https://github.com/ghuntley/how-to-build-a-coding-agent)를 TypeScript로 옮긴 것입니다. 언어만 바뀌었고, 다루는 개념과 만드는 6개의 에이전트, 학습 목표는 같아요.
+>
+> 🇺🇸 English: [README.en.md](README.en.md)
 
 ---
 
-## 🛠️ What We're Building
+## 🎯 배울 내용
 
-You’ll build 6 versions of a coding assistant. 
+워크샵을 마치면 다음을 이해하게 됩니다:
 
-Each version adds more features:
+- ✅ Anthropic Claude API에 연결하는 방법
+- ✅ 간단한 AI 챗봇을 만드는 방법
+- ✅ 파일 읽기, 코드 편집, 명령 실행 같은 도구를 추가하는 방법
+- ✅ 도구 요청과 오류를 처리하는 방법
+- ✅ 단계마다 더 똑똑해지는 에이전트를 만드는 방법
 
-1. **Basic Chat** — talk to Claude
-2. **File Reader** — read code files
-3. **File Explorer** — list files in folders
-4. **Command Runner** — run shell commands
-5. **File Editor** — modify files
-6. **Code Search** — search your codebase with patterns
+---
+
+## 🛠️ 만들게 될 것
+
+코딩 어시스턴트를 6개 버전으로 만들어요.
+
+버전마다 기능이 하나씩 늘어납니다:
+
+1. **기본 채팅** — Claude와 대화하기
+2. **파일 리더** — 코드 파일 읽기
+3. **파일 탐색기** — 폴더 안의 파일 나열하기
+4. **명령 실행기** — 셸 명령 실행하기
+5. **파일 편집기** — 파일 수정하기
+6. **코드 검색** — 패턴으로 코드베이스 검색하기
 
 ```mermaid
 graph LR
-    subgraph "Application Progression"
-        A[chat.ts<br/>Basic Chat] --> B[read.ts<br/>+ File Reading]
-        B --> C[list_files.ts<br/>+ Directory Listing]
-        C --> D[bash_tool.ts<br/>+ Shell Commands]
-        D --> E[edit_tool.ts<br/>+ File Editing]
-        E --> F[code_search_tool.ts<br/>+ Code Search]
+    subgraph "애플리케이션 발전 과정"
+        A[chat.ts<br/>기본 채팅] --> B[read.ts<br/>+ 파일 읽기]
+        B --> C[list_files.ts<br/>+ 디렉터리 목록]
+        C --> D[bash_tool.ts<br/>+ 셸 명령]
+        D --> E[edit_tool.ts<br/>+ 파일 편집]
+        E --> F[code_search_tool.ts<br/>+ 코드 검색]
     end
     
-    subgraph "Tool Capabilities"
-        G[No Tools] --> H[read_file]
+    subgraph "도구 구성"
+        G[도구 없음] --> H[read_file]
         H --> I[read_file<br/>list_files]
         I --> J[read_file<br/>list_files<br/>bash]
         J --> K[read_file<br/>list_files<br/>bash<br/>edit_file]
@@ -61,84 +63,84 @@ graph LR
     F -.-> L
 ```
 
-At the end, you’ll end up with a powerful local developer assistant!
+마지막에는 로컬에서 쓰는 강력한 개발 어시스턴트가 완성됩니다!
 
 
 
 ---
 
-## 🧱 How It Works (Architecture)
+## 🧱 동작 방식 (아키텍처)
 
-Each agent works like this:
+각 에이전트는 이렇게 동작해요:
 
-1. Waits for your input
-2. Sends it to Claude
-3. Claude may respond directly or ask to use a tool
-4. The agent runs the tool (e.g., read a file)
-5. Sends the result back to Claude
-6. Claude gives you the final answer
+1. 사용자의 입력을 기다립니다
+2. 입력을 Claude에게 보냅니다
+3. Claude는 바로 답하거나 도구 사용을 요청합니다
+4. 에이전트가 도구를 실행합니다 (예: 파일 읽기)
+5. 결과를 Claude에게 돌려보냅니다
+6. Claude가 최종 답변을 줍니다
 
-We call this the **event loop** — it's like the agent's heartbeat.
+이것을 **이벤트 루프**라고 불러요 — 에이전트의 심장 박동 같은 거죠.
 
 ```mermaid
 graph TB
-    subgraph "Agent Architecture"
-        A[Agent] --> B[Anthropic Client]
-        A --> C[Tool Registry]
-        A --> D[getUserMessage Function]
-        A --> E[Verbose Logging]
+    subgraph "에이전트 구조"
+        A[Agent] --> B[Anthropic 클라이언트]
+        A --> C[도구 레지스트리]
+        A --> D[getUserMessage 함수]
+        A --> E[상세 로깅]
     end
     
-    subgraph "Shared Event Loop"
-        F[Start Chat Session] --> G[Get User Input]
-        G --> H{Empty Input?}
-        H -->|Yes| G
-        H -->|No| I[Add to Conversation]
+    subgraph "공통 이벤트 루프"
+        F[채팅 세션 시작] --> G[사용자 입력 받기]
+        G --> H{빈 입력?}
+        H -->|예| G
+        H -->|아니오| I[대화에 추가]
         I --> J[runInference]
-        J --> K[Claude Response]
-        K --> L{Tool Use?}
-        L -->|No| M[Display Text]
-        L -->|Yes| N[Execute Tools]
-        N --> O[Collect Results]
-        O --> P[Send Results to Claude]
+        J --> K[Claude 응답]
+        K --> L{도구 사용?}
+        L -->|아니오| M[텍스트 출력]
+        L -->|예| N[도구 실행]
+        N --> O[결과 모으기]
+        O --> P[결과를 Claude에게 전송]
         P --> J
         M --> G
     end
     
-    subgraph "Tool Execution Loop"
-        N --> Q[Find Tool by Name]
-        Q --> R[Execute Tool Function]
-        R --> S[Capture Result/Error]
-        S --> T[Add to Tool Results]
-        T --> U{More Tools?}
-        U -->|Yes| Q
-        U -->|No| O
+    subgraph "도구 실행 루프"
+        N --> Q[이름으로 도구 찾기]
+        Q --> R[도구 함수 실행]
+        R --> S[결과/오류 기록]
+        S --> T[도구 결과에 추가]
+        T --> U{남은 도구?}
+        U -->|예| Q
+        U -->|아니오| O
     end
 ```
 
-## 🚀 Getting Started
+## 🚀 시작하기
 
-### ✅ Prerequisites
+### ✅ 준비물
 
-* Node.js 22+ or [devenv](https://devenv.sh/) (recommended for easy setup)
-* An [Anthropic API Key](https://platform.claude.com/settings/keys)
+* Node.js 22 이상 또는 [devenv](https://devenv.sh/) (간편한 설정을 위해 권장)
+* [Anthropic API 키](https://platform.claude.com/settings/keys)
 
-### 🔧 Set Up Your Environment
+### 🔧 환경 설정
 
-**Option 1: Recommended (using devenv)**
+**방법 1: 권장 (devenv 사용)**
 
 ```bash
-devenv shell  # Loads everything you need
+devenv shell  # 필요한 것을 모두 불러옵니다
 ```
 
-**Option 2: Manual setup**
+**방법 2: 수동 설정**
 
 ```bash
-# Make sure Node.js is installed
+# Node.js가 설치되어 있는지 확인하세요
 npm install
 ```
 
-### 🔐 Add Your API Key
+### 🔐 API 키 추가
 
 ```bash
 export ANTHROPIC_API_KEY="your-api-key-here"
@@ -146,130 +148,130 @@ export ANTHROPIC_API_KEY="your-api-key-here"
 
 ---
 
-## 🏁 Start with the Basics
+## 🏁 기본부터 시작하기
 
-### 1. `chat.ts` — Basic Chat
+### 1. `chat.ts` — 기본 채팅
 
-A simple chatbot that talks to Claude.
+Claude와 대화하는 간단한 챗봇이에요.
 
 ```bash
 npx tsx chat.ts
 ```
 
-* ➡️ Try: “Hello!”
-* ➡️ Add `--verbose` to see detailed logs
+* ➡️ 해 보기: “안녕!”
+* ➡️ `--verbose`를 붙이면 상세 로그를 볼 수 있어요
 
-> 💡 [`tsx`](https://tsx.is) runs a TypeScript file directly, with no build step. On Node.js 22.18+ `node chat.ts` works too.
+> 💡 [`tsx`](https://tsx.is)는 빌드 단계 없이 TypeScript 파일을 바로 실행해요. Node.js 22.18 이상에서는 `node chat.ts`도 동작합니다.
 
 ---
 
-## 🛠️ Add Tools (One Step at a Time)
+## 🛠️ 도구 추가하기 (한 번에 하나씩)
 
-### 2. `read.ts` — Read Files
+### 2. `read.ts` — 파일 읽기
 
-Now Claude can read files from your computer.
+이제 Claude가 컴퓨터의 파일을 읽을 수 있어요.
 
 ```bash
 npx tsx read.ts
 ```
 
-* ➡️ Try: “Read fizzbuzz.js”
+* ➡️ 해 보기: “fizzbuzz.js 읽어 줘”
 
 ---
 
-### 3. `list_files.ts` — Explore Folders
+### 3. `list_files.ts` — 폴더 둘러보기
 
-Lets Claude look around your directory.
+Claude가 디렉터리를 둘러볼 수 있게 해 줍니다.
 
 ```bash
 npx tsx list_files.ts
 ```
 
-* ➡️ Try: “List all files in this folder”
-* ➡️ Try: “What’s in fizzbuzz.js?”
+* ➡️ 해 보기: “이 폴더에 있는 파일을 모두 보여 줘”
+* ➡️ 해 보기: “fizzbuzz.js에 뭐가 들어 있어?”
 
 ---
 
-### 4. `bash_tool.ts` — Run Shell Commands
+### 4. `bash_tool.ts` — 셸 명령 실행
 
-Allows Claude to run safe terminal commands.
+Claude가 안전한 터미널 명령을 실행할 수 있게 해 줍니다.
 
 ```bash
 npx tsx bash_tool.ts
 ```
 
-* ➡️ Try: “Run git status”
-* ➡️ Try: “List all .ts files using bash”
+* ➡️ 해 보기: “git status 실행해 줘”
+* ➡️ 해 보기: “bash로 .ts 파일을 모두 나열해 줘”
 
 ---
 
-### 5. `edit_tool.ts` — Edit Files
+### 5. `edit_tool.ts` — 파일 편집
 
-Claude can now **modify code**, create files, and make changes.
+이제 Claude가 **코드를 수정**하고, 파일을 만들고, 변경할 수 있어요.
 
 ```bash
 npx tsx edit_tool.ts
 ```
 
-* ➡️ Try: “Create a Python hello world script”
-* ➡️ Try: “Add a comment to the top of fizzbuzz.js”
+* ➡️ 해 보기: “Python hello world 스크립트를 만들어 줘”
+* ➡️ 해 보기: “fizzbuzz.js 맨 위에 주석을 추가해 줘”
 
 ---
 
-### 6. `code_search_tool.ts` — Search Code
+### 6. `code_search_tool.ts` — 코드 검색
 
-Use pattern search (powered by [ripgrep](https://github.com/BurntSushi/ripgrep)).
+패턴 검색을 사용합니다 ([ripgrep](https://github.com/BurntSushi/ripgrep) 기반).
 
 ```bash
 npx tsx code_search_tool.ts
 ```
 
-* ➡️ Try: “Find all function definitions in TypeScript files”
-* ➡️ Try: “Search for TODO comments”
+* ➡️ 해 보기: “TypeScript 파일에서 함수 정의를 모두 찾아 줘”
+* ➡️ 해 보기: “TODO 주석을 검색해 줘”
 
 ---
 
-## 🧪 Sample Files (Already Included)
+## 🧪 샘플 파일 (기본 포함)
 
-1. `fizzbuzz.js`: for file reading and editing
-1. `riddle.txt`: a fun text file to explore
-1. `AGENT.md`: info about the project environment
-
----
-
-## 🐞 Troubleshooting
-
-**API key not working?**
-
-* Make sure it’s exported: `echo $ANTHROPIC_API_KEY`
-* Check your quota on [Anthropic’s dashboard](https://www.anthropic.com)
-
-**TypeScript errors?**
-
-* Run `npm install`
-* Make sure you’re using Node.js 22 or later
-* Run `npm run check` to typecheck every step
-
-**Tool errors?**
-
-* Use `--verbose` for full error logs
-* Check file paths and permissions
-
-**Environment issues?**
-
-* Use `devenv shell` to avoid config problems
+1. `fizzbuzz.js`: 파일 읽기와 편집 실습용
+1. `riddle.txt`: 살펴볼 만한 재미있는 텍스트 파일
+1. `AGENT.md`: 프로젝트 환경 정보
 
 ---
 
-## 💡 How Tools Work (Under the Hood)
+## 🐞 문제 해결
 
-Tools are like plugins. You define:
+**API 키가 동작하지 않나요?**
 
-* **Name** (e.g., `read_file`)
-* **Input Schema** (what info it needs)
-* **Function** (what it does)
+* export되어 있는지 확인하세요: `echo $ANTHROPIC_API_KEY`
+* [Anthropic 대시보드](https://www.anthropic.com)에서 사용 한도를 확인하세요
 
-Example tool definition in TypeScript:
+**TypeScript 오류가 나나요?**
+
+* `npm install`을 실행하세요
+* Node.js 22 이상을 쓰고 있는지 확인하세요
+* `npm run check`로 모든 단계를 타입 검사하세요
+
+**도구 오류가 나나요?**
+
+* `--verbose`로 전체 오류 로그를 확인하세요
+* 파일 경로와 권한을 확인하세요
+
+**환경 문제가 있나요?**
+
+* `devenv shell`을 사용하면 설정 문제를 피할 수 있어요
+
+---
+
+## 💡 도구의 동작 원리 (내부 구조)
+
+도구는 플러그인 같은 거예요. 다음 세 가지를 정의합니다:
+
+* **이름** (예: `read_file`)
+* **입력 스키마** (도구에 필요한 정보)
+* **함수** (도구가 하는 일)
+
+TypeScript로 정의한 도구 예시:
 
 ```typescript
 const ReadFileDefinition: ToolDefinition = {
@@ -280,61 +282,61 @@ const ReadFileDefinition: ToolDefinition = {
 };
 ```
 
-Schema generation uses [Zod](https://zod.dev) schemas — so it’s easy to define and reuse.
+스키마는 [Zod](https://zod.dev) 스키마로 생성하기 때문에 정의하고 재사용하기 쉬워요.
 
 ---
 
-## 🧭 Workshop Path: Learn by Building
+## 🧭 워크샵 경로: 만들면서 배우기
 
-| Phase | What to Focus On                                 |
-| ----- | ------------------------------------------------ |
-| **1** | `chat.ts`: API integration and response handling |
-| **2** | `read.ts`: Tool system, schema generation        |
-| **3** | `list_files.ts`: Multiple tools, file system     |
-| **4** | `bash_tool.ts`: Shell execution, error capture   |
-| **5** | `edit_tool.ts`: File editing, safety checks      |
-| **6** | `code_search_tool.ts`: Pattern search, ripgrep   |
+| 단계 | 집중할 내용 |
+| ---- | ----------- |
+| **1** | `chat.ts`: API 연동과 응답 처리 |
+| **2** | `read.ts`: 도구 시스템, 스키마 생성 |
+| **3** | `list_files.ts`: 여러 도구, 파일 시스템 |
+| **4** | `bash_tool.ts`: 셸 실행, 오류 포착 |
+| **5** | `edit_tool.ts`: 파일 편집, 안전 검사 |
+| **6** | `code_search_tool.ts`: 패턴 검색, ripgrep |
 
 ---
 
-## 🛠️ Developer Environment (Optional)
+## 🛠️ 개발 환경 (선택)
 
-If you use [`devenv`](https://devenv.sh/), it gives you:
+[`devenv`](https://devenv.sh/)를 사용하면 다음이 제공돼요:
 
 * Node.js, TypeScript, Python, Rust, .NET
-* Git and other dev tools
+* Git 및 기타 개발 도구
 
 ```bash
-devenv shell   # Load everything
-devenv test    # Run checks
-hello          # Greeting script
+devenv shell   # 전부 불러오기
+devenv test    # 검사 실행
+hello          # 인사 스크립트
 ```
 
 ---
 
-## 🚀 What's Next?
+## 🚀 다음 단계는?
 
-Once you complete the workshop, try building:
+워크샵을 마쳤다면 이런 것들을 만들어 보세요:
 
-* Custom tools (e.g., API caller, web scraper)
-* Tool chains (run tools in a sequence)
-* Memory features (remember things across sessions)
-* A web UI for your agent
-* Integration with other AI models
-
----
-
-## 📦 Summary
-
-This workshop helps you:
-
-* Understand agent architecture
-* Learn to build smart assistants
-* Grow capabilities step-by-step
-* Practice using Claude and TypeScript together
+* 커스텀 도구 (예: API 호출기, 웹 스크레이퍼)
+* 도구 체인 (여러 도구를 순서대로 실행)
+* 메모리 기능 (세션이 바뀌어도 기억하기)
+* 에이전트용 웹 UI
+* 다른 AI 모델과의 연동
 
 ---
 
-Have fun exploring and building your own AI-powered tools! 💻✨
+## 📦 요약
 
-If you have questions or ideas, feel free to fork the repo, open issues, or connect with the community!
+이 워크샵을 통해 다음을 할 수 있어요:
+
+* 에이전트 아키텍처 이해하기
+* 똑똑한 어시스턴트를 만드는 법 배우기
+* 기능을 단계적으로 늘려 가기
+* Claude와 TypeScript를 함께 써 보기
+
+---
+
+나만의 AI 도구를 즐겁게 탐구하고 만들어 보세요! 💻✨
+
+질문이나 아이디어가 있다면 저장소를 포크하거나, 이슈를 열거나, 커뮤니티와 함께 이야기해 주세요!
