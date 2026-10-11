@@ -118,6 +118,36 @@ graph TB
     end
 ```
 
+---
+
+## 🧩 Key Concepts
+
+The [blog post](https://ghuntley.com/agent/) behind this workshop covers three ideas before writing any code.
+
+### 1. An agent is 300 lines of code running in a loop
+
+The post describes a coding agent as “300 lines of code running in a loop with LLM tokens”. It appends your input or a tool’s result to the conversation, sends the conversation to the model, and repeats. Tools like Cursor, Claude Code and GitHub Copilot share the same basic shape, and the model does the heavy lifting.
+
+The event loop above is that loop. Each step in this workshop is a few hundred lines, logging included.
+
+### 2. Pick an agentic model
+
+Not every LLM is suited to agents. The post sorts models by behaviour into high safety, low safety, oracle (strong at summarising and deep thinking) and agentic. Agentic models are trained to make progress by calling tools rather than pondering at length. The post likens such a model to a “digital squirrel” that chases tool calls instead of nuts.
+
+So the first step in building an agent is choosing a strongly agentic model. If you need deeper reasoning, you can wire another model in as a tool for the agent to call when it needs it.
+
+> When the post was written in August 2025 it recommended Claude Sonnet. This repo uses `claude-opus-5-5`.
+
+### 3. The context window is small
+
+The context window a model can see at once is smaller than you might think. The post suggests treating it like a Commodore 64, a computer with little memory.
+
+* **One activity per context.** Start fresh when you switch tasks, or the earlier work can leak into the next result.
+* **The more you put in, the worse the outcome.** System prompts and tool definitions take up room too. Adding many MCP servers or tools leaves less space for the actual work.
+* **In this workshop**, the whole `conversation` array and every registered tool definition are sent with each request. So the bigger a tool’s result, the more context it uses. This is also why `list_files` skips `node_modules`.
+
+---
+
 ## 🚀 Getting Started
 
 ### ✅ Prerequisites
