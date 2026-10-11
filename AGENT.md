@@ -4,35 +4,37 @@
 This project uses [devenv](https://devenv.sh/) for reproducible development environments with Nix.
 
 ## Commands
-- `devenv shell` - Enter the development shell
+- `devenv shell` - Enter the development shell (also runs `npm install`)
 - `devenv test` - Run tests (currently runs git version check)
-- `go build` - Build Go project
-- `go run main.go` - Run the chat application
-- `go test ./...` - Run all Go tests
-- `go test <package>` - Run tests for specific package
-- `go mod tidy` - Download dependencies
+- `npm install` - Download dependencies
+- `npm run check` - Typecheck all TypeScript files and check formatting
+- `npm run fmt` - Format all TypeScript files with Prettier
+- `npm run build` - Compile all TypeScript files to JavaScript in `dist/`
+- `make` - Format, check and build in one go
 - `hello` - Custom script that greets from the development environment
 
 ### Application Commands
-- `go run chat.go` - Simple chat interface with Claude
-- `go run read.go` - Chat with file reading capabilities
-- `go run list_files.go` - Chat with file listing and reading capabilities
-- `go run bash_tool.go` - Chat with file operations and bash command execution
-- `go run edit_tool.go` - Chat with full file operations (read, list, edit, bash)
+- `npx tsx chat.ts` - Simple chat interface with Claude
+- `npx tsx read.ts` - Chat with file reading capabilities
+- `npx tsx list_files.ts` - Chat with file listing and reading capabilities
+- `npx tsx bash_tool.ts` - Chat with file operations and bash command execution
+- `npx tsx edit_tool.ts` - Chat with full file operations (read, list, edit, bash)
+- `npx tsx code_search_tool.ts` - Chat with file operations, bash and code search (ripgrep)
 
 ### Verbose Logging
-All Go applications support a `--verbose` flag for detailed execution logging:
-- `go run chat.go --verbose` - Enable verbose logging for debugging
-- `go run read.go --verbose` - See detailed tool execution and API calls
-- `go run edit_tool.go --verbose` - Debug file operations and tool usage
+All TypeScript applications support a `--verbose` flag for detailed execution logging:
+- `npx tsx chat.ts --verbose` - Enable verbose logging for debugging
+- `npx tsx read.ts --verbose` - See detailed tool execution and API calls
+- `npx tsx edit_tool.ts --verbose` - Debug file operations and tool usage
 
 ## Architecture
 - **Environment**: Nix-based development environment using devenv
-- **Shell**: Includes Git, Go toolchain, and custom greeting script
+- **Shell**: Includes Git, Node.js, TypeScript, ripgrep, and custom greeting script
 - **Structure**: Chat application with terminal interface to Claude via Anthropic API
 
 ## Code Style Guidelines
 - Follow Nix conventions for devenv.nix configuration
+- Format TypeScript with Prettier (`npm run fmt`)
 - Use standard Git workflows
 - Development environment configuration should be reproducible
 
@@ -42,7 +44,7 @@ All Go applications support a `--verbose` flag for detailed execution logging:
 When debugging issues with the chat applications, use the `--verbose` flag to get detailed execution logs:
 
 ```bash
-go run edit_tool.go --verbose
+npx tsx edit_tool.ts --verbose
 ```
 
 **What verbose logging shows:**
@@ -51,10 +53,10 @@ go run edit_tool.go --verbose
 - File operations (reading, writing, listing files with sizes/counts)
 - Bash command execution (commands run, output, errors)
 - Conversation flow (message processing, content blocks)
-- Error details with stack traces
+- Error details
 
 **Log output locations:**
-- **Verbose mode**: Detailed logs go to stderr with timestamps and file locations
+- **Verbose mode**: Detailed logs go to stderr with timestamps
 - **Normal mode**: Only essential output goes to stdout
 
 **Common troubleshooting scenarios:**
@@ -66,7 +68,7 @@ go run edit_tool.go --verbose
 ### Environment Issues
 - Ensure `ANTHROPIC_API_KEY` environment variable is set
 - Run `devenv shell` to ensure proper development environment
-- Use `go mod tidy` to ensure dependencies are installed
+- Use `npm install` to ensure dependencies are installed
 
 ## Notes
 - Requires ANTHROPIC_API_KEY environment variable to be set

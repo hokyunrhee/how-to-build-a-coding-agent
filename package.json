@@ -1,0 +1,25 @@
+{
+  "name": "how-to-build-a-coding-agent",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Build your own coding agent in TypeScript, step by step",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc",
+    "check": "tsc --noEmit && prettier --check \"*.ts\"",
+    "fmt": "prettier --write \"*.ts\""
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
+    "zod": "^4.6.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

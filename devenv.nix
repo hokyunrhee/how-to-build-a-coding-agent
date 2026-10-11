@@ -5,15 +5,19 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = [ 
-    pkgs.git 
-    pkgs.nodejs_20
-    pkgs.nodePackages.typescript
+  packages = [
+    pkgs.git
     pkgs.ripgrep
   ];
 
   # https://devenv.sh/languages/
-  languages.go.enable = true;
+  languages.javascript = {
+    enable = true;
+    package = pkgs.nodejs_24;
+    npm.enable = true;
+    npm.install.enable = true;
+  };
+  languages.typescript.enable = true;
   languages.python = {
     enable = true;
     package = pkgs.python311;
@@ -24,7 +28,6 @@
   };
   languages.rust.enable = true;
   languages.dotnet.enable = true;
-  languages.typescript.enable = true;
 
   # https://devenv.sh/processes/
   # processes.cargo-watch.exec = "cargo-watch";
@@ -41,10 +44,10 @@
     hello
     echo "Available tools:"
     git --version
-    go version
-    python --version
     node --version
+    npm --version
     tsc --version
+    python --version
     rustc --version
     dotnet --version
     rg --version
@@ -60,9 +63,8 @@
   enterTest = ''
     echo "Running tests"
     git --version | grep --color=auto "${pkgs.git.version}"
-    go version
-    python --version
     node --version
+    python --version
     rustc --version
     dotnet --version
     rg --version

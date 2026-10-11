@@ -6,6 +6,8 @@ You don’t need to be an AI expert. Just follow along and build step-by-step!
 
 🌐 **Want a detailed overview?** Check out the blog post: [ghuntley.com/agent](https://ghuntley.com/agent/)
 
+> 🟦 **TypeScript edition.** This is a TypeScript port of [ghuntley/how-to-build-a-coding-agent](https://github.com/ghuntley/how-to-build-a-coding-agent) (written in Go). Only the language changed — the concepts, the six agents you build and the learning goals are the same.
+
 ---
 
 ## 🎯 What You'll Learn
@@ -36,11 +38,11 @@ Each version adds more features:
 ```mermaid
 graph LR
     subgraph "Application Progression"
-        A[chat.go<br/>Basic Chat] --> B[read.go<br/>+ File Reading]
-        B --> C[list_files.go<br/>+ Directory Listing]
-        C --> D[bash_tool.go<br/>+ Shell Commands]
-        D --> E[edit_tool.go<br/>+ File Editing]
-        E --> F[code_search_tool.go<br/>+ Code Search]
+        A[chat.ts<br/>Basic Chat] --> B[read.ts<br/>+ File Reading]
+        B --> C[list_files.ts<br/>+ Directory Listing]
+        C --> D[bash_tool.ts<br/>+ Shell Commands]
+        D --> E[edit_tool.ts<br/>+ File Editing]
+        E --> F[code_search_tool.ts<br/>+ Code Search]
     end
     
     subgraph "Tool Capabilities"
@@ -118,7 +120,7 @@ graph TB
 
 ### ✅ Prerequisites
 
-* Go 1.24.2+ or [devenv](https://devenv.sh/) (recommended for easy setup)
+* Node.js 22+ or [devenv](https://devenv.sh/) (recommended for easy setup)
 * An [Anthropic API Key](https://platform.claude.com/settings/keys)
 
 ### 🔧 Set Up Your Environment
@@ -132,8 +134,8 @@ devenv shell  # Loads everything you need
 **Option 2: Manual setup**
 
 ```bash
-# Make sure Go is installed
-go mod tidy
+# Make sure Node.js is installed
+npm install
 ```
 
 ### 🔐 Add Your API Key
@@ -146,39 +148,41 @@ export ANTHROPIC_API_KEY="your-api-key-here"
 
 ## 🏁 Start with the Basics
 
-### 1. `chat.go` — Basic Chat
+### 1. `chat.ts` — Basic Chat
 
 A simple chatbot that talks to Claude.
 
 ```bash
-go run chat.go
+npx tsx chat.ts
 ```
 
 * ➡️ Try: “Hello!”
 * ➡️ Add `--verbose` to see detailed logs
 
+> 💡 [`tsx`](https://tsx.is) runs a TypeScript file directly, with no build step. On Node.js 22.18+ `node chat.ts` works too.
+
 ---
 
 ## 🛠️ Add Tools (One Step at a Time)
 
-### 2. `read.go` — Read Files
+### 2. `read.ts` — Read Files
 
 Now Claude can read files from your computer.
 
 ```bash
-go run read.go
+npx tsx read.ts
 ```
 
 * ➡️ Try: “Read fizzbuzz.js”
 
 ---
 
-### 3. `list_files.go` — Explore Folders
+### 3. `list_files.ts` — Explore Folders
 
 Lets Claude look around your directory.
 
 ```bash
-go run list_files.go
+npx tsx list_files.ts
 ```
 
 * ➡️ Try: “List all files in this folder”
@@ -186,25 +190,25 @@ go run list_files.go
 
 ---
 
-### 4. `bash_tool.go` — Run Shell Commands
+### 4. `bash_tool.ts` — Run Shell Commands
 
 Allows Claude to run safe terminal commands.
 
 ```bash
-go run bash_tool.go
+npx tsx bash_tool.ts
 ```
 
 * ➡️ Try: “Run git status”
-* ➡️ Try: “List all .go files using bash”
+* ➡️ Try: “List all .ts files using bash”
 
 ---
 
-### 5. `edit_tool.go` — Edit Files
+### 5. `edit_tool.ts` — Edit Files
 
 Claude can now **modify code**, create files, and make changes.
 
 ```bash
-go run edit_tool.go
+npx tsx edit_tool.ts
 ```
 
 * ➡️ Try: “Create a Python hello world script”
@@ -212,15 +216,15 @@ go run edit_tool.go
 
 ---
 
-### 6. `code_search_tool.go` — Search Code
+### 6. `code_search_tool.ts` — Search Code
 
 Use pattern search (powered by [ripgrep](https://github.com/BurntSushi/ripgrep)).
 
 ```bash
-go run code_search_tool.go
+npx tsx code_search_tool.ts
 ```
 
-* ➡️ Try: “Find all function definitions in Go files”
+* ➡️ Try: “Find all function definitions in TypeScript files”
 * ➡️ Try: “Search for TODO comments”
 
 ---
@@ -240,10 +244,11 @@ go run code_search_tool.go
 * Make sure it’s exported: `echo $ANTHROPIC_API_KEY`
 * Check your quota on [Anthropic’s dashboard](https://www.anthropic.com)
 
-**Go errors?**
+**TypeScript errors?**
 
-* Run `go mod tidy`
-* Make sure you’re using Go 1.24.2 or later
+* Run `npm install`
+* Make sure you’re using Node.js 22 or later
+* Run `npm run check` to typecheck every step
 
 **Tool errors?**
 
@@ -264,18 +269,18 @@ Tools are like plugins. You define:
 * **Input Schema** (what info it needs)
 * **Function** (what it does)
 
-Example tool definition in Go:
+Example tool definition in TypeScript:
 
-```go
-var ToolDefinition = ToolDefinition{
-    Name:        "read_file",
-    Description: "Reads the contents of a file",
-    InputSchema: GenerateSchema[ReadFileInput](),
-    Function:    ReadFile,
-}
+```typescript
+const ReadFileDefinition: ToolDefinition = {
+  name: "read_file",
+  description: "Reads the contents of a file",
+  inputSchema: generateSchema(ReadFileInput),
+  function: readFile,
+};
 ```
 
-Schema generation uses Go structs — so it’s easy to define and reuse.
+Schema generation uses [Zod](https://zod.dev) schemas — so it’s easy to define and reuse.
 
 ---
 
@@ -283,12 +288,12 @@ Schema generation uses Go structs — so it’s easy to define and reuse.
 
 | Phase | What to Focus On                                 |
 | ----- | ------------------------------------------------ |
-| **1** | `chat.go`: API integration and response handling |
-| **2** | `read.go`: Tool system, schema generation        |
-| **3** | `list_files.go`: Multiple tools, file system     |
-| **4** | `bash_tool.go`: Shell execution, error capture   |
-| **5** | `edit_tool.go`: File editing, safety checks      |
-| **6** | `code_search_tool.go`: Pattern search, ripgrep   |
+| **1** | `chat.ts`: API integration and response handling |
+| **2** | `read.ts`: Tool system, schema generation        |
+| **3** | `list_files.ts`: Multiple tools, file system     |
+| **4** | `bash_tool.ts`: Shell execution, error capture   |
+| **5** | `edit_tool.ts`: File editing, safety checks      |
+| **6** | `code_search_tool.ts`: Pattern search, ripgrep   |
 
 ---
 
@@ -296,7 +301,7 @@ Schema generation uses Go structs — so it’s easy to define and reuse.
 
 If you use [`devenv`](https://devenv.sh/), it gives you:
 
-* Go, Node, Python, Rust, .NET
+* Node.js, TypeScript, Python, Rust, .NET
 * Git and other dev tools
 
 ```bash
@@ -326,7 +331,7 @@ This workshop helps you:
 * Understand agent architecture
 * Learn to build smart assistants
 * Grow capabilities step-by-step
-* Practice using Claude and Go together
+* Practice using Claude and TypeScript together
 
 ---
 

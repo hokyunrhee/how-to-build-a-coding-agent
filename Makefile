@@ -1,37 +1,26 @@
 .PHONY: build fmt check clean all
 
-# Go binaries to build
-BINARIES := bash_tool chat edit_tool list_files read
-
-# Build all binaries
+# Compile all steps to JavaScript in dist/
 build:
-	@echo "Building binaries..."
-	go build -o bash_tool bash_tool.go
-	go build -o chat chat.go
-	go build -o edit_tool edit_tool.go
-	go build -o list_files list_files.go
-	go build -o read read.go
+	@echo "Building..."
+	npm run build
 
-# Format all Go files
+# Format all TypeScript files
 fmt:
-	@echo "Formatting Go files..."
-	go fmt ./...
+	@echo "Formatting TypeScript files..."
+	npm run fmt
 
-# Check (lint and vet) all Go files
+# Check (typecheck and formatting) all TypeScript files
 check:
-	@echo "Running go vet on individual files..."
-	go vet bash_tool.go
-	go vet chat.go
-	go vet edit_tool.go
-	go vet list_files.go
-	go vet read.go
-	@echo "Running go mod tidy..."
-	go mod tidy
+	@echo "Installing dependencies..."
+	npm install
+	@echo "Running tsc --noEmit and prettier --check..."
+	npm run check
 
-# Clean built binaries
+# Clean build output
 clean:
-	@echo "Cleaning binaries..."
-	rm -f $(BINARIES)
+	@echo "Cleaning build output..."
+	rm -rf dist
 
 # Build everything and run checks
 all: fmt check build
