@@ -298,7 +298,6 @@ function generateSchema(schema: z.ZodObject): Anthropic.Tool.InputSchema {
   return {
     type: "object",
     properties: jsonSchema.properties,
-    required: jsonSchema.required,
   };
 }
 

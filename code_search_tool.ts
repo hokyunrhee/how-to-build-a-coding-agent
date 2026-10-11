@@ -376,12 +376,12 @@ async function bash(input: unknown): Promise<string> {
   log(`Executing bash command: ${bashInput.command}`);
   const { output, error } = await runCommand("bash", ["-c", bashInput.command]);
   if (error) {
-    log(`Bash command failed: ${bashInput.command}, error: ${error}`);
+    log(`Bash command failed: ${error}`);
     return `Command failed with error: ${error}\nOutput: ${output}`;
   }
 
   log(
-    `Bash command succeeded: ${bashInput.command} (output: ${output.length} chars)`,
+    `Bash command executed successfully, output length: ${Buffer.byteLength(output)} chars`,
   );
   return output.trim();
 }
@@ -522,7 +522,6 @@ function generateSchema(schema: z.ZodObject): Anthropic.Tool.InputSchema {
   return {
     type: "object",
     properties: jsonSchema.properties,
-    required: jsonSchema.required,
   };
 }
 

@@ -281,15 +281,7 @@ const ReadFileDefinition: ToolDefinition = {
 async function readFile(input: unknown): Promise<string> {
   const readFileInput = ReadFileInput.parse(input);
 
-  log(`Reading file: ${readFileInput.path}`);
-  let content: Buffer;
-  try {
-    content = await fs.readFile(readFileInput.path);
-  } catch (err) {
-    log(`Failed to read file ${readFileInput.path}: ${err}`);
-    throw err;
-  }
-  log(`Successfully read file ${readFileInput.path} (${content.length} bytes)`);
+  const content = await fs.readFile(readFileInput.path);
   return content.toString();
 }
 
@@ -330,7 +322,7 @@ async function listFiles(input: unknown): Promise<string> {
     throw err;
   }
 
-  log(`Successfully listed ${files.length} files/directories in ${dir}`);
+  log(`Successfully listed ${files.length} items in ${dir}`);
 
   return JSON.stringify(files);
 }
@@ -364,7 +356,6 @@ function generateSchema(schema: z.ZodObject): Anthropic.Tool.InputSchema {
   return {
     type: "object",
     properties: jsonSchema.properties,
-    required: jsonSchema.required,
   };
 }
 

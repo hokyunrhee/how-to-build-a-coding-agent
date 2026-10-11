@@ -388,7 +388,7 @@ async function bash(input: unknown): Promise<string> {
   }
 
   log(
-    `Bash command succeeded: ${bashInput.command} (output: ${output.length} chars)`,
+    `Bash command succeeded: ${bashInput.command} (output: ${Buffer.byteLength(output)} bytes)`,
   );
   return output.trim();
 }
@@ -439,7 +439,6 @@ function generateSchema(schema: z.ZodObject): Anthropic.Tool.InputSchema {
   return {
     type: "object",
     properties: jsonSchema.properties,
-    required: jsonSchema.required,
   };
 }
 
